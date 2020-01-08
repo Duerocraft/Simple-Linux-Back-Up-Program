@@ -1,0 +1,21 @@
+Simple Linux Back Up Program In Python
+
+How it works
+
+- it will take automatic backup every 1 hour
+- you can use commands to take backup, load backup, check backup list
+
+How To Use
+
+- step 1 : Download the file
+- step 2 : Open backuper.py in IDE 
+- step 3 : Enter the name of the of directory you want to backup & name of the backup folder
+- step 4 : Run it
+- step 5 : press ctrl + c to type commands
+
+Commands
+
+- b (b is to take back up)
+- l <filename> (l is to load backup from backup folder)
+- bl (bl is to check backup list)
+- stop
