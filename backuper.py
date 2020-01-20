@@ -11,16 +11,9 @@ def backup():
     os.system(f"zip -r {name}.zip {dir2backup}/*")
     os.system(f"mv {name}.zip {backupdir}")
 
-def autobackup():
-    cdt = dt.datetime.now()
-    time.sleep(1)
-    cdt = cdt.strftime('%M-%S')
-    if cdt == "00-01":
-        backup()
-
 def load(name):
     try:
-        os.system("rm -r worlds/*")
+        os.system(f"rm -r {dir2backup}/*")
         os.system(f"cp backups/{name}.zip {dir2backup}")
         os.system(f"unzip {dir2backup}/{name}.zip")
         os.system(f"rm {dir2backup}/{name}.zip")
@@ -41,7 +34,8 @@ def commands(cmd):
 print("[*] Started")
 while 1:
     try:
-        autobackup()
+        backup()
+        time.sleep(60 * 60)
     except (KeyboardInterrupt, SystemExit):
         cmd = input("[*] > ")
         if cmd == "stop":
