@@ -17,8 +17,6 @@ def autobackup():
     cdt = cdt.strftime('%M-%S')
     if cdt == "00-01":
         backup()
-    else:
-        pass
 
 def load(name):
     try:
@@ -39,7 +37,6 @@ def commands(cmd):
         load(cmd[1])
     if cmd[0] == "bl":
         backuplist()
-        pass
 
 print("[*] Started")
 while 1:
