@@ -40,13 +40,10 @@ def backuplist():
 
 def commands(cmd):
     if cmd[0] == "b":
-        print("Selected 'b'")
         backup()
     elif cmd[0] == "l":
-        print("Selected 'l'")
         load(cmd[1])
     elif cmd[0] == "bl":
-        print("Selected 'bl'")
         backuplist()
     else:
         print("wrong input try again")
@@ -72,8 +69,9 @@ else:
         sec -= 60
 fb = threading.Timer(sec, autobackup).start()
 
+
+print("Type 'b'-Backup 'l'-Load Backup 'bl'-Backup List 'stop'-Stop")
 while 1:
-    print("Type 'b'-Backup 'l'-Load Backup 'bl'-Backup List 'stop'-Stop")
     cmd = input("[*] > ")
     if cmd == "stop":
         break
