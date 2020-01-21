@@ -11,7 +11,7 @@ How To Use
 - step 2 : Open backuper.py in IDE 
 - step 3 : Enter the name of the of directory you want to backup & name of the backup folder
 - step 4 : Run it
-- step 5 : press ctrl + c to type commands
+- step 5 : Type commands for manual backup, list backupfiles and load backupfiles
 
 Commands
 
