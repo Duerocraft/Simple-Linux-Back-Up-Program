@@ -2,7 +2,7 @@ Simple Linux Back Up Program In Python
 
 How it works
 
-- it will take automatic backup every 1 hour
+- it will take automatic backup every 30 minutes 
 - you can use commands to take backup, load backup, check backup list
 
 How To Use
