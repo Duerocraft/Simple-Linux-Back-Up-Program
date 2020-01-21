@@ -8,7 +8,7 @@ How it works
 How To Use
 
 - step 1 : Download the file
-- step 2 : Open backuper.py in IDE 
+- step 2 : Open backup.py in IDE 
 - step 3 : Enter the name of the of directory you want to backup & name of the backup folder
 - step 4 : Run it
 - step 5 : Type commands for manual backup, list backupfiles and load backupfiles
