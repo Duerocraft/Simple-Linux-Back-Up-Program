@@ -70,8 +70,8 @@ else:
 fb = threading.Timer(sec, autobackup).start()
 
 
-print("Type 'b'-Backup 'l'-Load Backup 'bl'-Backup List 'stop'-Stop")
 while 1:
+    print("Type 'b'-Backup 'l'-Load Backup 'bl'-Backup List 'stop'-Stop")
     cmd = input("[*] > ")
     if cmd == "stop":
         break
