@@ -11,7 +11,7 @@ def backup():
     cdt = dt.datetime.now()
     name = cdt.strftime('%Y-%m-%d-%H-%M-%S')
     print(name + ": File ready to BackUp")
-    os.system(f"zip -r {name}.zip {dir2backup}/*")
+    os.system(f"zip -r {name}.zip {dir2backup}")
     os.system(f"mv {name}.zip {backupdir}")
     print("BackUp complete")
 
