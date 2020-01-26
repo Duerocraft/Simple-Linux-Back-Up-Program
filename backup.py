@@ -5,13 +5,16 @@ import threading
 # Enter The Name Of The Directorys Here
 dir2backup = "worlds"
 backupdir = "backups"
+remove30MinAfter3Days = False
+removeOddNumbersHours = False
+removeEvenNumbersHours = False
 
 
 def backup():
     cdt = dt.datetime.now()
     name = cdt.strftime('%Y-%m-%d-%H-%M-%S')
     print(name + ": File ready to BackUp")
-    os.system(f"zip -r {name}.zip {dir2backup}/*")
+    os.system(f"zip -r {name}.zip {dir2backup}")
     os.system(f"mv {name}.zip {backupdir}")
     print("BackUp complete")
 
@@ -20,6 +23,7 @@ def autobackup():
     threading.Timer(30 * 60, autobackup).start()
     print("Next BackUp add to be BackedUp")
     backup()
+    RemoveOldBackup()
 
 
 def load(name):
@@ -38,6 +42,32 @@ def backuplist():
     os.system(f"cd {backupdir} && ls")
 
 
+def enableremoveolderbackup():
+    print("Do you want to remove 30m older than 3 days")
+    cmd = input("[*] > ")
+    if(cmd[0]=="y" or cmd[0]=="yes"):
+        remove30MinAfter3Days=True
+    else:
+        remove30MinAfter3Days=False
+    print("Do you want to remove odd number hours after 4 days")
+    cmd = input("[*] > ")
+    if(cmd[0]=="y" or cmd[0]=="yes"):
+        removeOddNumbersHours=True
+    else:
+        removeOddNumbersHours=False
+    print("Do you want to remove even number hours after 5 days")
+    cmd = input("[*] > ")
+    if(cmd[0]=="y" or cmd[0]=="yes"):
+        removeEvenNumbersHours=True
+    else:
+        removeEvenNumbersHours=False
+    print("NOT READY...")
+
+
+def RemoveOldBackup():
+    pass
+
+
 def commands(cmd):
     if cmd[0] == "b":
         backup()
@@ -45,6 +75,8 @@ def commands(cmd):
         load(cmd[1])
     elif cmd[0] == "bl":
         backuplist()
+    elif cmd[0] == "r":
+        enableremoveolderbackup()
     else:
         print("wrong input try again")
 
@@ -71,7 +103,7 @@ fb = threading.Timer(sec, autobackup).start()
 
 
 while 1:
-    print("Type 'b'-Backup 'l'-Load Backup 'bl'-Backup List 'stop'-Stop")
+    print("Type 'b'-Backup, 'l'-Load backup, 'bl'-Backup list, 'stop'-Stop, 'r'-Remove old backup")
     cmd = input("[*] > ")
     if cmd == "stop":
         break
