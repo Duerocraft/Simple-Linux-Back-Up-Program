@@ -1,13 +1,10 @@
 import os
 import datetime as dt
 import threading
+import json
 
-# Enter The Name Of The Directorys Here
-dir2backup = "worlds"
-backupdir = "backups"
-remove30MinAfter3Days = False
-removeOddNumbersHours = False
-removeEvenNumbersHours = False
+
+global dir2backup, backupdir, autobptime, autodltime
 
 
 def backup():
@@ -20,7 +17,10 @@ def backup():
 
 
 def autobackup():
-    threading.Timer(30 * 60, autobackup).start()
+    global backupThread
+    global oldbackupThread
+    oldbackupThread = backupThread
+    backupThread = threading.Timer(autobptime * 60, autobackup).start()
     print("Next BackUp add to be BackedUp")
     backup()
     RemoveOldBackup()
@@ -42,30 +42,25 @@ def backuplist():
     os.system(f"cd {backupdir} && ls")
 
 
-def enableremoveolderbackup():
-    print("Do you want to remove 30m older than 3 days")
-    cmd = input("[*] > ")
-    if(cmd[0]=="y" or cmd[0]=="yes"):
-        remove30MinAfter3Days=True
-    else:
-        remove30MinAfter3Days=False
-    print("Do you want to remove odd number hours after 4 days")
-    cmd = input("[*] > ")
-    if(cmd[0]=="y" or cmd[0]=="yes"):
-        removeOddNumbersHours=True
-    else:
-        removeOddNumbersHours=False
-    print("Do you want to remove even number hours after 5 days")
-    cmd = input("[*] > ")
-    if(cmd[0]=="y" or cmd[0]=="yes"):
-        removeEvenNumbersHours=True
-    else:
-        removeEvenNumbersHours=False
-    print("NOT READY...")
-
-
 def RemoveOldBackup():
-    pass
+    global deleteThread
+    global olddeleteThread
+    olddeleteThread = deleteThread
+    deleteThread = threading.Timer(30 * 60, RemoveOldBackup()).start()
+    if(autodltime==""):
+        return
+    before3Days = dt.today() - dt.timedelta(days=autodltime)
+    m = int(before3Days.strftime('%M'))
+    if(m==30):
+        print("deleting: "+before3Days)
+    before4Days = dt.today() - dt.timedelta(days=autodltime+1)
+    h = int(before4Days.strftime('%H'))
+    if(h%2==1):
+        print("deleting: "+before4Days)
+    before5Days = dt.today() - dt.timedelta(days=autodltime+2)
+    h = int(before5Days.strftime('%H'))
+    if(h!=0):
+        print("deleting: "+before5Days)
 
 
 def commands(cmd):
@@ -75,35 +70,93 @@ def commands(cmd):
         load(cmd[1])
     elif cmd[0] == "bl":
         backuplist()
-    elif cmd[0] == "r":
-        enableremoveolderbackup()
+    elif cmd[0] == "e":
+        setup()
     else:
         print("wrong input try again")
 
 
+def setup():
+    configdefaultdata = {}
+
+    defaultconfig = open('config.json', 'w')
+
+    global dir2backup
+    dir2backup = input('[*] Enter the name of directory to backup >')
+    global backupdir
+    backupdir = input('[*] Enter the name of directory to store the backups >')
+    global autobptime
+    print("Auto delete will nor work if time is not set to 30")
+    autobptime = input('[*] Enter the time to take auto backup "Multiples of 30 Minutes only">')
+    global autodltime
+    if(int(autobptime)==30):
+        autodltime = input('[*] Enter the time to delete older backups "In Days">')
+    else:
+        autodltime = ""
+
+    configdefaultdata['data'] = {
+        "Directory2Backup": f"{dir2backup}",
+        "BackupsDirectory": f"{backupdir}",
+        "AutoBackupTime": f"{autobptime}",
+        "AutoDeleteTime": f"{autodltime}"
+    }
+    json.dump(configdefaultdata, defaultconfig)
+    defaultconfig.close()
+
+
+def open():
+    try:
+        config = open('config.json', 'r')
+        config = json.load(config)
+
+        data = config['data']
+
+        global dir2backup
+        dir2backup = data['Directory2Backup']
+        global backupdir
+        backupdir = data['BackupsDirectory']
+        global autobptime
+        autobptime = int(data['AutoBackupTime'])
+        global autodltime
+        autodltime = int(data['AutoDeleteTime'])
+
+    except Exception as e:
+        if str(e) == "[Errno 2] No such file or directory: 'config.json'":
+            print("[*] Your config file is missing")
+            setup()
+        else:
+            print(f'error = {e}')
+    config.close()
+
+
 print("Started BackUp Script")
 cdt = dt.datetime.now()
-m = cdt.strftime('%M')
-s = cdt.strftime('%S')
+m = int(cdt.strftime('%M'))
+s = int(cdt.strftime('%S'))
 sec = 0
 
-if (int(m) == 0 or int(m) == 30) and (int(s) == 0):
+open()
+
+if (m == 0 or m == 30) and (s == 0):
     pass
-elif int(m) < 30:
-    sec = (30 - int(m)) * 60
-    if int(s) != 0:
-        sec += 60 - int(s)
+elif m < 30:
+    sec = (30 - m) * 60
+    if s != 0:
+        sec += 60 - s
         sec -= 60
 else:
-    sec = (60 - int(m)) * 60
-    if int(s) != 0:
-        sec += 60 - int(s)
+    sec = (60 - m) * 60
+    if s != 0:
+        sec += 60 - s
         sec -= 60
-fb = threading.Timer(sec, autobackup).start()
+global backupThread
+backupThread = threading.Timer(sec, autobackup).start()
+global deleteThread
+deleteThread = threading.Timer(sec, RemoveOldBackup).start()
 
 
 while 1:
-    print("Type 'b'-Backup, 'l'-Load backup, 'bl'-Backup list, 'stop'-Stop, 'r'-Remove old backup")
+    print("Type 'b'-Backup, 'l'-Load backup, 'bl'-Backup list, 'e'-Edit backup config, 'stop'-Stop")
     cmd = input("[*] > ")
     if cmd == "stop":
         break
