@@ -23,7 +23,6 @@ def autobackup():
     backupThread = threading.Timer(autobptime * 60, autobackup).start()
     print("Next BackUp add to be BackedUp")
     backup()
-    RemoveOldBackup()
 
 
 def load(name):
