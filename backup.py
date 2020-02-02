@@ -48,15 +48,15 @@ def RemoveOldBackup():
     deleteThread = threading.Timer(30 * 60, RemoveOldBackup).start()
     if(autodltime==""):
         return
-    before3Days = dt.today() - dt.timedelta(days=autodltime)
+    before3Days = dt.datetime.now() - dt.timedelta(days=autodltime)
     m = int(before3Days.strftime('%M'))
     if(m==30):
         print("deleting: "+before3Days)
-    before4Days = dt.today() - dt.timedelta(days=autodltime+1)
+    before4Days = dt.datetime.now() - dt.timedelta(days=autodltime+1)
     h = int(before4Days.strftime('%H'))
     if(h%2==1):
         print("deleting: "+before4Days)
-    before5Days = dt.today() - dt.timedelta(days=autodltime+2)
+    before5Days = dt.datetime.now() - dt.timedelta(days=autodltime+2)
     h = int(before5Days.strftime('%H'))
     if(h!=0):
         print("deleting: "+before5Days)
