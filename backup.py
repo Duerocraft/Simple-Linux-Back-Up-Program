@@ -11,7 +11,7 @@ def backup():
     cdt = dt.datetime.now()
     name = cdt.strftime('%Y-%m-%d-%H-%M-%S')
     print(name + ": File ready to BackUp")
-    os.system(f"zip -r {name}.zip {dir2backup}")
+    os.system(f"zip -r -q -T {name}.zip {dir2backup}")
     os.system(f"mv {name}.zip {backupdir}")
     print("BackUp complete")
 
@@ -47,19 +47,23 @@ def RemoveOldBackup():
     olddeleteThread = deleteThread
     deleteThread = threading.Timer(30 * 60, RemoveOldBackup).start()
     if(autodltime==""):
+        print("remove canceled")
         return
     before3Days = dt.datetime.now() - dt.timedelta(days=autodltime)
     m = int(before3Days.strftime('%M'))
+    h = int(before3Days.strftime('%H'))
+    dateToRemove = before3Days.strftime('%Y-%m-%d-%H-%M-%S')
     if(m==30):
-        print("deleting: "+before3Days)
-    before4Days = dt.datetime.now() - dt.timedelta(days=autodltime+1)
-    h = int(before4Days.strftime('%H'))
-    if(h%2==1):
-        print("deleting: "+before4Days)
-    before5Days = dt.datetime.now() - dt.timedelta(days=autodltime+2)
-    h = int(before5Days.strftime('%H'))
-    if(h!=0):
-        print("deleting: "+before5Days)
+        print("deleting: "+ dateToRemove)
+    elif(h%2==1):
+        before4Days = dt.datetime.now() - dt.timedelta(days=autodltime+1)
+        dateToRemove = before4Days.strftime('%Y-%m-%d-%H-%M-%S')
+        print("deleting: "+before4Days.strftime('%Y-%m-%d-%H-%M-%S'))
+    elif(h!=0):
+        before5Days = dt.datetime.now() - dt.timedelta(days=autodltime+2)
+        dateToRemove = before5Days.strftime('%Y-%m-%d-%H-%M-%S')
+        print("deleting: "+before5Days.strftime('%Y-%m-%d-%H-%M-%S'))
+    os.system(f"rm {backupdir}/{dateToRemove}")
 
 
 def commands(cmd):
