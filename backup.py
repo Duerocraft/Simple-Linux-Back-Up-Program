@@ -104,7 +104,7 @@ def setup():
     defaultconfig.close()
 
 
-def open():
+def loadConfig():
     try:
         config = open('config.json', 'r')
         config = json.load(config)
@@ -120,6 +120,7 @@ def open():
         autobptime = int(data['AutoBackupTime'])
         global autodltime
         autodltime = int(data['AutoDeleteTime'])
+        print("config loaded")
     except Exception as e:
         if str(e) == "[Errno 2] No such file or directory: 'config.json'":
             print("[*] Your config file is missing")
@@ -134,7 +135,7 @@ m = int(cdt.strftime('%M'))
 s = int(cdt.strftime('%S'))
 sec = 0
 
-open()
+loadConfig()
 
 if (m == 0 or m == 30) and (s == 0):
     pass
