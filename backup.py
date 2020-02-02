@@ -63,7 +63,7 @@ def RemoveOldBackup():
         before5Days = dt.datetime.now() - dt.timedelta(days=autodltime+2)
         dateToRemove = before5Days.strftime('%Y-%m-%d-%H-%M-%S')
         print("deleting: "+before5Days.strftime('%Y-%m-%d-%H-%M-%S'))
-    os.system(f"rm {backupdir}/{dateToRemove}")
+    os.system(f"rm {backupdir}/{dateToRemove}.zip")
 
 
 def commands(cmd):
