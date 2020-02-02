@@ -46,7 +46,7 @@ def RemoveOldBackup():
     global deleteThread
     global olddeleteThread
     olddeleteThread = deleteThread
-    deleteThread = threading.Timer(30 * 60, RemoveOldBackup()).start()
+    deleteThread = threading.Timer(30 * 60, RemoveOldBackup).start()
     if(autodltime==""):
         return
     before3Days = dt.today() - dt.timedelta(days=autodltime)
