@@ -110,6 +110,7 @@ def open():
         config = json.load(config)
 
         data = config['data']
+        config.close()
 
         global dir2backup
         dir2backup = data['Directory2Backup']
@@ -119,14 +120,12 @@ def open():
         autobptime = int(data['AutoBackupTime'])
         global autodltime
         autodltime = int(data['AutoDeleteTime'])
-
     except Exception as e:
         if str(e) == "[Errno 2] No such file or directory: 'config.json'":
             print("[*] Your config file is missing")
             setup()
         else:
             print(f'error = {e}')
-    config.close()
 
 
 print("Started BackUp Script")
