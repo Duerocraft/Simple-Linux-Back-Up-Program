@@ -76,10 +76,6 @@ def commands(cmd):
 
 
 def setup():
-    configdefaultdata = {}
-
-    defaultconfig = open('config.json', 'w')
-
     global dir2backup
     dir2backup = input('[*] Enter the name of directory to backup >')
     global backupdir
@@ -93,32 +89,33 @@ def setup():
     else:
         autodltime = ""
 
-    configdefaultdata['data'] = {
-        "Directory2Backup": f"{dir2backup}",
-        "BackupsDirectory": f"{backupdir}",
-        "AutoBackupTime": f"{autobptime}",
-        "AutoDeleteTime": f"{autodltime}"
-    }
-    json.dump(configdefaultdata, defaultconfig)
-    defaultconfig.close()
+
+    with open('config.json', 'w') as defaultconfig:
+        configdefaultdata=None
+        configdefaultdata['data'] = {
+            "Directory2Backup": f"{dir2backup}",
+            "BackupsDirectory": f"{backupdir}",
+            "AutoBackupTime": f"{autobptime}",
+            "AutoDeleteTime": f"{autodltime}"
+        }
+        json.dump(configdefaultdata, defaultconfig)
 
 
 def loadConfig():
     try:
-        config = open('config.json', 'r')
-        config = json.load(config)
+        with open('config.json', 'r') as config:
+            config = json.load(config)
 
-        data = config['data']
-        config.close()
+            data = config['data']
 
-        global dir2backup
-        dir2backup = data['Directory2Backup']
-        global backupdir
-        backupdir = data['BackupsDirectory']
-        global autobptime
-        autobptime = int(data['AutoBackupTime'])
-        global autodltime
-        autodltime = int(data['AutoDeleteTime'])
+            global dir2backup
+            dir2backup = data['Directory2Backup']
+            global backupdir
+            backupdir = data['BackupsDirectory']
+            global autobptime
+            autobptime = int(data['AutoBackupTime'])
+            global autodltime
+            autodltime = int(data['AutoDeleteTime'])
         print("config loaded")
     except Exception as e:
         if str(e) == "[Errno 2] No such file or directory: 'config.json'":
