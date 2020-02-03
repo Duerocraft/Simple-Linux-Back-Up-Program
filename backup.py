@@ -20,8 +20,7 @@ def autobackup():
     global backupThread
     global oldbackupThread
     oldbackupThread = backupThread
-    backupThread = threading.Timer(autobptime * 60, autobackup).start()
-    print("Next BackUp add to be BackedUp")
+    backupThread = threading.Timer(int(autobptime) * 60, autobackup).start()
     backup()
 
 
