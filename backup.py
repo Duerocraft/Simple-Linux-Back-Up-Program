@@ -49,18 +49,18 @@ def RemoveOldBackup():
     if(autodltime==""):
         print("remove canceled")
         return
-    before3Days = dt.datetime.now() - dt.timedelta(days=autodltime)
+    before3Days = dt.datetime.now() - dt.timedelta(days=int(autodltime))
     m = int(before3Days.strftime('%M'))
     h = int(before3Days.strftime('%H'))
     dateToRemove = before3Days.strftime('%Y-%m-%d-%H-%M-%S')
     if(m==30):
         print("deleting: "+ dateToRemove)
     elif(h%2==1):
-        before4Days = dt.datetime.now() - dt.timedelta(days=autodltime+1)
+        before4Days = dt.datetime.now() - dt.timedelta(days=int(autodltime)+1)
         dateToRemove = before4Days.strftime('%Y-%m-%d-%H-%M-%S')
         print("deleting: "+before4Days.strftime('%Y-%m-%d-%H-%M-%S'))
     elif(h!=0):
-        before5Days = dt.datetime.now() - dt.timedelta(days=autodltime+2)
+        before5Days = dt.datetime.now() - dt.timedelta(days=int(autodltime)+2)
         dateToRemove = before5Days.strftime('%Y-%m-%d-%H-%M-%S')
         print("deleting: "+before5Days.strftime('%Y-%m-%d-%H-%M-%S'))
     os.system(f"rm {backupdir}/{dateToRemove}.zip")
