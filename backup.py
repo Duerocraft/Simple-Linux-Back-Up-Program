@@ -93,9 +93,8 @@ def setup():
     else:
         autodltime = ""
 
-
+    configdefaultdata={}
     with open('config.json', 'w') as defaultconfig:
-        configdefaultdata=None
         configdefaultdata['data'] = {
             "Directory2Backup": f"{dir2backup}",
             "BackupsDirectory": f"{backupdir}",
