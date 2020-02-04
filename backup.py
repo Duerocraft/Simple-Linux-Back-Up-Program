@@ -3,13 +3,12 @@ import datetime as dt
 import threading
 import json
 
-
 global dir2backup, backupdir, autobptime, autodltime
 
 
 def backup():
     cdt = dt.datetime.now()
-    name = cdt.strftime('%Y-%m-%d-%H-%M-%S')
+    name = cdt.strftime('%Y-%m-%d-%H-%M')
     print(name + ": File ready to BackUp")
     os.system(f"zip -r -q -T {name}.zip {dir2backup}")
     os.system(f"mv {name}.zip {backupdir}")
@@ -20,7 +19,15 @@ def autobackup():
     global backupThread
     global oldbackupThread
     oldbackupThread = backupThread
-    backupThread = threading.Timer(int(autobptime) * 60, autobackup).start()
+    s = int(dt.datetime.now().strftime('%S'))
+    if s == 0:
+        backupThread = threading.Timer(int(autobptime) * 60, autobackup).start()
+    elif s < 30:
+        backupThread = threading.Timer((int(autobptime) * 60) - s, autobackup).start()
+    else:
+        backupThread = threading.Timer(int(autobptime) * 60, autobackup).start()
+        print("Time out of sync in AutoBackup")
+
     backup()
 
 
@@ -44,24 +51,31 @@ def RemoveOldBackup():
     global deleteThread
     global olddeleteThread
     olddeleteThread = deleteThread
-    deleteThread = threading.Timer(30 * 60, RemoveOldBackup).start()
-    if(autodltime==""):
+    s = int(dt.datetime.now().strftime('%S'))
+    if s == 0:
+        deleteThread = threading.Timer(30 * 60, RemoveOldBackup).start()
+    elif s < 30:
+        deleteThread = threading.Timer((30 * 60) - s, RemoveOldBackup).start()
+    else:
+        deleteThread = threading.Timer(30 * 60, RemoveOldBackup).start()
+        print("Time out of sync in AutoRemove")
+    if autodltime == "":
         print("remove canceled")
         return
     before3Days = dt.datetime.now() - dt.timedelta(days=int(autodltime))
     m = int(before3Days.strftime('%M'))
     h = int(before3Days.strftime('%H'))
-    dateToRemove = before3Days.strftime('%Y-%m-%d-%H-%M-%S')
-    if(m==30):
-        print("deleting: "+ dateToRemove)
-    elif(h%2==1):
-        before4Days = dt.datetime.now() - dt.timedelta(days=int(autodltime)+1)
-        dateToRemove = before4Days.strftime('%Y-%m-%d-%H-%M-%S')
-        print("deleting: "+before4Days.strftime('%Y-%m-%d-%H-%M-%S'))
-    elif(h!=0):
-        before5Days = dt.datetime.now() - dt.timedelta(days=int(autodltime)+2)
-        dateToRemove = before5Days.strftime('%Y-%m-%d-%H-%M-%S')
-        print("deleting: "+before5Days.strftime('%Y-%m-%d-%H-%M-%S'))
+    dateToRemove = before3Days.strftime('%Y-%m-%d-%H-%M')
+    if m == 30:
+        print("deleting: " + dateToRemove)
+    elif h % 2 == 1:
+        before4Days = dt.datetime.now() - dt.timedelta(days=int(autodltime) + 1)
+        dateToRemove = before4Days.strftime('%Y-%m-%d-%H-%M')
+        print("deleting: " + before4Days.strftime('%Y-%m-%d-%H-%M'))
+    elif h != 0:
+        before5Days = dt.datetime.now() - dt.timedelta(days=int(autodltime) + 2)
+        dateToRemove = before5Days.strftime('%Y-%m-%d-%H-%M')
+        print("deleting: " + before5Days.strftime('%Y-%m-%d-%H-%M'))
     os.system(f"rm {backupdir}/{dateToRemove}.zip")
 
 
@@ -87,12 +101,12 @@ def setup():
     print("Auto delete will nor work if time is not set to 30")
     autobptime = input('[*] Enter the time to take auto backup "Multiples of 30 Minutes only">')
     global autodltime
-    if(int(autobptime)==30):
+    if int(autobptime) == 30:
         autodltime = input('[*] Enter the time to delete older backups "In Days">')
     else:
         autodltime = ""
 
-    configdefaultdata={}
+    configdefaultdata = {}
     with open('config.json', 'w') as defaultconfig:
         configdefaultdata['data'] = {
             "Directory2Backup": f"{dir2backup}",
@@ -151,7 +165,6 @@ global backupThread
 backupThread = threading.Timer(sec, autobackup).start()
 global deleteThread
 deleteThread = threading.Timer(sec, RemoveOldBackup).start()
-
 
 while 1:
     print("Type 'b'-Backup, 'l'-Load backup, 'bl'-Backup list, 'e'-Edit backup config, 'stop'-Stop")
