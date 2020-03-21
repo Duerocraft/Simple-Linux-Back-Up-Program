@@ -114,7 +114,7 @@ def setup():
             "AutoBackupTime": f"{autobptime}",
             "AutoDeleteTime": f"{autodltime}"
         }
-        json.dump(configdefaultdata, defaultconfig)
+        json.dump(configdefaultdata, defaultconfig, indent=4)
 
 
 def loadConfig():
